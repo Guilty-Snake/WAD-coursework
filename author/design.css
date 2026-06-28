@@ -1,5 +1,8 @@
 section{
     display: flex;
-    width: 220px;
-    height: 207px;
+    width: 420px;
+    height: 380px;
+}
+body{
+    background-color: #F5F3FF;
 }

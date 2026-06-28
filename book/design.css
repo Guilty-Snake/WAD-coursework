@@ -9,6 +9,10 @@ th, td{
 th{
     background-color: #6D3BD7;
     color: #FFFFFF;
+    border-radius: 30px;
+}
+table{
+    border-spacing: 0px;
 }
 section{
     display: flex;

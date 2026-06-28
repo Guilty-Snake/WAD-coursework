@@ -1,0 +1,28 @@
+body{
+    background-color: #F5F3FF;
+}
+
+th, td{
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-left: 16px;
+    padding-right: 16px;
+    align-content: center;
+}
+th{
+    background-color: #6D3BD7;
+    color: #FFFFFF;
+    border-radius: 30px;
+}
+table{
+    border-spacing: 0px;
+}
+section{
+    display: flex;
+    justify-self: center;
+    justify-content: center;
+    border-radius: 30px;
+    background-color: #FFFFFF;
+    width: 992px;
+    height: 180px;
+}
