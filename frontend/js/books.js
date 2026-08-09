@@ -1,6 +1,6 @@
 // js/books.js
 
-const UPLOADS_BASE = 'http://localhost:5000/uploads';
+const UPLOADS_BASE = 'http://localhost:5050/uploads';
 let BOOKS_CACHE = [];
 let filterDebounceTimer = null;
 
