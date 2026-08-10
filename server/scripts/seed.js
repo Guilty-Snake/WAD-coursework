@@ -8,7 +8,7 @@ const initSchema = require('../config/schema');
 initSchema();
 
 const ADMIN_USERNAME = 'admin';
-const ADMIN_PASSWORD = 'ChangeMe123!'; // change after first login, this is a coursework demo default
+const ADMIN_PASSWORD = '55.jM6*6V7=u'; 
 
 function upsertAdmin() {
   const existing = db.prepare('SELECT id FROM users WHERE username = ?').get(ADMIN_USERNAME);
