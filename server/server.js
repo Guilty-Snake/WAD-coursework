@@ -32,6 +32,12 @@ app.use('/api/books', bookRoutes);
 // 404 for unknown API routes
 app.use('/api', (req, res) => res.status(404).json({ error: 'Endpoint not found.' }));
 
+// Serve the frontend (client/) from this same Express app. Deliberate choice:
+// one service to deploy instead of two, no CORS config needed since everything
+// is same-origin, and the frontend's API_BASE/UPLOADS_BASE are relative paths
+// that work identically whether you're on localhost or the deployed URL.
+app.use(express.static(path.join(__dirname, '..', 'client')));
+
 // Multer errors (e.g. bad file type / too large) land here too since it calls next(err).
 app.use(errorHandler);
 
