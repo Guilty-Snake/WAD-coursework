@@ -36,8 +36,7 @@ app.use('/api', (req, res) => res.status(404).json({ error: 'Endpoint not found.
 // one service to deploy instead of two, no CORS config needed since everything
 // is same-origin, and the frontend's API_BASE/UPLOADS_BASE are relative paths
 // that work identically whether you're on localhost or the deployed URL.
-app.use(express.static(path.join(__dirname, '..', 'client')));
-
+app.use(express.static(path.join(__dirname, '..', 'frontend')));
 // Multer errors (e.g. bad file type / too large) land here too since it calls next(err).
 app.use(errorHandler);
 
