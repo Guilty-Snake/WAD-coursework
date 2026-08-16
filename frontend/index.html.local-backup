@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stackroom | Library Catalog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/frontend/css/style.css" />
+</head>
+<body>
+
+<!-- ===================== SIDEBAR ===================== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <h1>Stackroom</h1>
+    <p>Library Catalog</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <button class="nav-item" data-nav="catalog">
+      <span class="material-symbols-outlined">menu_book</span> Catalog
+    </button>
+    <button class="nav-item admin-only hidden" data-nav="authors">
+      <span class="material-symbols-outlined">person_search</span> Authors
+    </button>
+    <button class="nav-item admin-only hidden" data-nav="genres">
+      <span class="material-symbols-outlined">category</span> Genres
+    </button>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <span id="userChip" class="user-chip hidden"></span>
+    <button id="loginBtn" class="btn btn-primary btn-block">
+      <span class="material-symbols-outlined">login</span> Staff Login
+    </button>
+    <button id="logoutBtn" class="nav-item hidden">
+      <span class="material-symbols-outlined">logout</span> Log out
+    </button>
+  </div>
+</aside>
+
+<!-- ===================== TOPBAR ===================== -->
+<header class="topbar">
+  <div class="topbar-left">
+    <button id="menuToggle" class="menu-toggle" aria-label="Toggle menu">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+    <h2 id="pageTitle">Catalog</h2>
+  </div>
+  <div class="topbar-right" id="catalogSearchWrap">
+    <div class="search-box">
+      <span class="material-symbols-outlined">search</span>
+      <input id="searchInput" type="search" placeholder="Search title, ISBN, or author&hellip;" />
+    </div>
+  </div>
+</header>
+
+<!-- ===================== MAIN ===================== -->
+<main id="app">
+
+  <!-- ===================== CATALOG VIEW ===================== -->
+  <section id="view-catalog" class="view">
+    <div class="view-header">
+      <div>
+        <p class="eyebrow">Open Stacks</p>
+        <h3>Browse the Catalog</h3>
+      </div>
+      <button id="addBookBtn" class="btn btn-primary admin-only hidden">
+        <span class="material-symbols-outlined">add</span> Add Book
+      </button>
+    </div>
+
+    <div class="toolbar">
+      <select id="filterAuthor" class="select"><option value="">All authors</option></select>
+      <select id="filterGenre" class="select"><option value="">All genres</option></select>
+      <label class="checkbox-label">
+        <input type="checkbox" id="filterLowStock" />
+        Low stock only
+      </label>
+    </div>
+
+    <p id="catalogStatus" class="status-line"></p>
+    <div id="bookGrid" class="bento-grid"></div>
+  </section>
+
+  <!-- ===================== AUTHORS VIEW (admin) ===================== -->
+  <section id="view-authors" class="view hidden">
+    <div class="view-header">
+      <div>
+        <p class="eyebrow">Reference Data</p>
+        <h3>Authors</h3>
+      </div>
+      <button id="addAuthorBtn" class="btn btn-primary">
+        <span class="material-symbols-outlined">add</span> Add Author
+      </button>
+    </div>
+    <div id="authorGrid" class="bento-grid"></div>
+  </section>
+
+  <!-- ===================== GENRES VIEW (admin) ===================== -->
+  <section id="view-genres" class="view hidden">
+    <div class="view-header">
+      <div>
+        <p class="eyebrow">Reference Data</p>
+        <h3>Genres</h3>
+      </div>
+      <button id="addGenreBtn" class="btn btn-primary">
+        <span class="material-symbols-outlined">add</span> Add Genre
+      </button>
+    </div>
+    <div id="genreGrid" class="bento-grid"></div>
+  </section>
+
+</main>
+
+<!-- ===================== LOGIN MODAL ===================== -->
+<div id="loginModal" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>Staff Login</h2>
+      <button class="modal-close" data-close="loginModal"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <label for="loginUsername">Username</label>
+        <input id="loginUsername" name="username" type="text" required autocomplete="username" />
+        <p class="field-error" data-error-for="username"></p>
+      </div>
+      <div class="field">
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" name="password" type="password" required minlength="8" autocomplete="current-password" />
+        <p class="field-error" data-error-for="password"></p>
+      </div>
+      <p class="form-error" id="loginFormError"></p>
+      <button type="submit" class="btn btn-primary btn-block">
+        <span class="material-symbols-outlined">login</span> Log in
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== BOOK MODAL (create/edit) ===================== -->
+<div id="bookModal" class="modal-backdrop hidden">
+  <div class="modal modal-wide">
+    <div class="modal-head">
+      <h2 id="bookModalTitle">Add Book</h2>
+      <button class="modal-close" data-close="bookModal"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <form id="bookForm" novalidate>
+      <input type="hidden" id="bookId" />
+      <div class="field-grid">
+        <div class="field">
+          <label for="bookTitle">Title *</label>
+          <input id="bookTitle" name="title" type="text" required maxlength="300" />
+          <p class="field-error" data-error-for="title"></p>
+        </div>
+        <div class="field">
+          <label for="bookIsbn">ISBN</label>
+          <input id="bookIsbn" name="isbn" type="text" maxlength="20" />
+          <p class="field-error" data-error-for="isbn"></p>
+        </div>
+        <div class="field">
+          <label for="bookAuthor">Author *</label>
+          <select id="bookAuthor" name="author_id" required></select>
+          <p class="field-error" data-error-for="author_id"></p>
+        </div>
+        <div class="field">
+          <label for="bookGenre">Genre *</label>
+          <select id="bookGenre" name="genre_id" required></select>
+          <p class="field-error" data-error-for="genre_id"></p>
+        </div>
+        <div class="field">
+          <label for="bookYear">Published Year</label>
+          <input id="bookYear" name="published_year" type="number" min="1000" />
+          <p class="field-error" data-error-for="published_year"></p>
+        </div>
+        <div class="field">
+          <label for="bookTotalCopies">Total Copies *</label>
+          <input id="bookTotalCopies" name="total_copies" type="number" min="0" required />
+          <p class="field-error" data-error-for="total_copies"></p>
+        </div>
+        <div class="field">
+          <label for="bookAvailableCopies">Copies Available *</label>
+          <input id="bookAvailableCopies" name="copies_available" type="number" min="0" required />
+          <p class="field-error" data-error-for="copies_available"></p>
+        </div>
+        <div class="field">
+          <label for="bookCover">Cover Image</label>
+          <input id="bookCover" name="cover_image" type="file" accept="image/png,image/jpeg,image/webp,image/gif" />
+          <p class="field-error" data-error-for="cover_image"></p>
+        </div>
+      </div>
+      <div class="field">
+        <label for="bookDescription">Description</label>
+        <textarea id="bookDescription" name="description" rows="3" maxlength="2000"></textarea>
+      </div>
+      <p class="form-error" id="bookFormError"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" data-close="bookModal">Cancel</button>
+        <button type="submit" class="btn btn-primary"><span class="material-symbols-outlined">save</span> Save Book</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== AUTHOR MODAL ===================== -->
+<div id="authorModal" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="authorModalTitle">Add Author</h2>
+      <button class="modal-close" data-close="authorModal"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <form id="authorForm" novalidate>
+      <input type="hidden" id="authorId" />
+      <div class="field">
+        <label for="authorName">Name *</label>
+        <input id="authorName" name="name" type="text" required maxlength="150" />
+        <p class="field-error" data-error-for="name"></p>
+      </div>
+      <div class="field">
+        <label for="authorBio">Bio</label>
+        <textarea id="authorBio" name="bio" rows="3" maxlength="2000"></textarea>
+      </div>
+      <p class="form-error" id="authorFormError"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" data-close="authorModal">Cancel</button>
+        <button type="submit" class="btn btn-primary"><span class="material-symbols-outlined">save</span> Save Author</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== GENRE MODAL ===================== -->
+<div id="genreModal" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="genreModalTitle">Add Genre</h2>
+      <button class="modal-close" data-close="genreModal"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <form id="genreForm" novalidate>
+      <input type="hidden" id="genreId" />
+      <div class="field">
+        <label for="genreName">Name *</label>
+        <input id="genreName" name="name" type="text" required maxlength="100" />
+        <p class="field-error" data-error-for="name"></p>
+      </div>
+      <p class="form-error" id="genreFormError"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" data-close="genreModal">Cancel</button>
+        <button type="submit" class="btn btn-primary"><span class="material-symbols-outlined">save</span> Save Genre</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="/frontend/js/api.js"></script>
+<script src="/frontend/js/auth.js"></script>
+<script src="/frontend/js/authors.js"></script>
+<script src="/frontend/js/books.js"></script>
+<script src="/frontend/js/genres.js"></script>
+<script src="/frontend/js/main.js"></script>
+</body>
+</html>

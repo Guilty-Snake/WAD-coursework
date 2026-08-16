@@ -1,7 +1,7 @@
 // js/api.js
 // Thin fetch wrapper shared by every feature module.
 
-const API_BASE = 'https://wad-coursework-1.onrender.com/api';
+const API_BASE = 'http://localhost:5050/api';
 
 const Auth = {
   getToken() { return localStorage.getItem('lms_token'); },
